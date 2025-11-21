@@ -1,17 +1,17 @@
-function voicedSpeech = voicedSpeechDetect(userFile, windowSize, overlapSize)
+function voicedSpeech = voicedSpeechDetect(audioData, windowSize, overlapSize)
 % voicedSpeech takes an audio file and detects what parts are voiced
 % speech.
 
 % Set short time energy threshold to distinguish between silence and speech
 
 energyThreshold = 20;
-[segments,~] = buffer(userFile,windowSize, overlapSize,"nodelay");
+[segments,~] = buffer(audioData,windowSize, overlapSize,"nodelay");
 ste = sum((segments.*hamming(windowSize,"periodic")).^2,1);
 isSpeech = ste(:) > energyThreshold;
 
 % Set zero crossing rate to distinguish between voiced and unvoiced speech
 zcrThreshold = 0.02;
-zcr = zerocrossrate(userFile, WindowLength=windowSize, OverlapLength=overlapSize);
+zcr = zerocrossrate(audioData, 'WindowLength', windowSize, 'OverlapLength', overlapSize);
 isVoiced = zcr < zcrThreshold;
 
 voicedSpeech = isSpeech & isVoiced;

@@ -37,10 +37,12 @@ title('Pitch Over Time');
 grid on;
 
 % Generate the pitch plot of only voiced speech
-voicedSpeech = voicedSpeechDetect(userFile, windowSize, overlapSize);
+voicedSpeech = voicedSpeechDetect(audioData, windowSize, overlapSize);
+
+f0(~voicedSpeech) = NaN;
 
 nexttile()
-voicedpitchPlot = plot(time, f0(voicedSpeech));
+voicedpitchPlot = plot(time, f0);
 xlabel('Time (s)');
 ylabel('Voiced Pitch (Hz)');
 title('Voiced Pitch Over Time');
