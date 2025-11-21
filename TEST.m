@@ -1,4 +1,4 @@
-fsSet = 44000; %set good human record rate from GG
+fsSet = 44000; %set good human record rate 
 label =[]; % label for male and female
 
 %Part 1: data preparation folder, file, dataset
@@ -15,12 +15,20 @@ for i = 1:length(maleFiles)
     y = y / max(abs(y)); % Normalize the audio signal
     y=resample(y,fsSet, Fs); % Set same sample rate
     %trimsilent?
-    p = pitch(y, fsSet); %pitch
+    p = pitch(y, fsSet); %pitch calculate by function pitch()
     pMean=median(p);% median P
-    pIQR=iqr(p); % IQR P
+  
 
-    mf = mfss(y, fsSet);
+% MFCC is represents a sound's short-term power spectrum as a set of coefficients
+    % returns the mel- frequency cepstral coefficients from audio input
+    % the function extracts a vector included delta and delta-delta of it 
+    % delta and delta-delta is temporal that capture rate change of MFCC
+    % use it as example to classification male and female voice. 
+    mf = mfcc(y, fsSet);
+
+
     mfMean=median(mf);
     mfSTD=std(mf)
+    
 
 end
