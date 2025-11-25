@@ -4,7 +4,7 @@ function voicedSpeech = voicedSpeechDetect(audioData, windowSize, overlapSize)
 
 % Set short time energy threshold to distinguish between silence and speech
 
-energyThreshold = 0.01;
+energyThreshold = 1.2;
 [segments,~] = buffer(audioData,windowSize, overlapSize,"nodelay");
 ste = sum((segments.*hamming(windowSize,"periodic")).^2,1);
 isSpeech = ste(:) > energyThreshold;

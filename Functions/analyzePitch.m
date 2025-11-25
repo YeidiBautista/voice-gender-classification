@@ -44,7 +44,7 @@ f0_voiced(~voicedSpeech) = NaN;
 nexttile()
 
 % Plot the modified copy against adjusted time vector
-voicedpitchPlot = plot(timePitch, f0_voiced);
+voicedpitchPlot = plot(timePitch, f0_voiced, "*");
 xlabel('Time (s)');
 ylabel('Voiced Pitch (Hz)');
 title('Voiced Pitch Over Time');
