@@ -1,27 +1,46 @@
+% Create folder name for saving all recordings
 outFolder = "my_recordings";
+
+% If the folder does not exist, create it
 if ~exist(outFolder, "dir"), mkdir(outFolder); end
 
+% Create an audio recorder object (44.1 kHz, 16-bit, mono)
 recObj = audiorecorder(44100, 16, 1);  % mic setup
 
+% Loop 50 times to make 50 recordings
 for i = 1:50
+    % Print which sample is being recorded
     fprintf("\nSample %d of 50\n", i);
+% Ask user to enter the name they will say
     name = input("Enter the name you will say: ", "s");
 
+% Notify user recording will begin soon
     fprintf("Get ready. Recording starts in 2 seconds...\n");
     pause(2);
 
+% Tell user what to say during recording
     fprintf("Recording... SAY: 'My name is %s'\n", name);
+
+    % Record audio for 3 seconds (blocking execution)
     recordblocking(recObj, 3);
     disp("Done!");
 
+% Get the recorded audio samples
     y = getaudiodata(recObj);
 
+% Build filename like: voice_01_David.wav
     filename = fullfile(outFolder, sprintf("voice_%02d_%s.wav", i, name));
+
+% Save the recorded audio to the file
     audiowrite(filename, y, 44100);
 
+ % Print the saved file path
     fprintf("Saved: %s\n", filename);
 
-    pause(1);
+    pause(1); % Wait 1 second before the next recording
 end
+
+% Final message after all recordings are completed
+disp("All 50 recordings completed!");
 
 disp("All 50 recordings completed!");
