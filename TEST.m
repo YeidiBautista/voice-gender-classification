@@ -28,7 +28,7 @@ for i = 1:length(maleFiles)
 
 
     mfMean=median(mf);
-    mfSTD=std(mf)
+    mfSTD=std(mf);
     
 
 end
