@@ -1,0 +1,27 @@
+outFolder = "my_recordings";
+if ~exist(outFolder, "dir"), mkdir(outFolder); end
+
+recObj = audiorecorder(44100, 16, 1);  % mic setup
+
+for i = 1:50
+    fprintf("\nSample %d of 50\n", i);
+    name = input("Enter the name you will say: ", "s");
+
+    fprintf("Get ready. Recording starts in 2 seconds...\n");
+    pause(2);
+
+    fprintf("Recording... SAY: 'My name is %s'\n", name);
+    recordblocking(recObj, 3);
+    disp("Done!");
+
+    y = getaudiodata(recObj);
+
+    filename = fullfile(outFolder, sprintf("voice_%02d_%s.wav", i, name));
+    audiowrite(filename, y, 44100);
+
+    fprintf("Saved: %s\n", filename);
+
+    pause(1);
+end
+
+disp("All 50 recordings completed!");
