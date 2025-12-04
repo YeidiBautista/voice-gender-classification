@@ -43,4 +43,3 @@ end
 % Final message after all recordings are completed
 disp("All 50 recordings completed!");
 
-disp("All 50 recordings completed!");
