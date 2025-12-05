@@ -15,8 +15,8 @@ for i = 1:50
     name = input("Enter the name you will say: ", "s");
 
 % Notify user recording will begin soon
-    fprintf("Get ready. Recording starts in 2 seconds...\n");
-    pause(2);
+    fprintf("Get ready. Recording starts in 3 seconds...\n");
+    pause(3);
 
 % Tell user what to say during recording
     fprintf("Recording... SAY: 'My name is %s'\n", name);
