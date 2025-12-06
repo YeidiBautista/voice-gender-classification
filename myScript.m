@@ -33,23 +33,23 @@ for i = 1:length(files)
    end
  
 %noise cleaning process
-noiseLen = round(0.2 * fsSet);
-noiseProfile = y(1:noiseLen);
+lengthNoise = round(0.2 * fsSet);
+noisePro = y(1:lengthNoise);
 win = hamming(512, 'periodic');
 overlap = 256;
 fftLen = 512;
 %signal and noise
 [S, ~, ~] = stft(y, fsSet, 'Window', win, 'OverlapLength', overlap, 'FFTLength', fftLen);
-[N, ~, ~] = stft(noiseProfile, fsSet, 'Window', win, 'OverlapLength', overlap, 'FFTLength', fftLen);
-% Noise magnitude averaged across time ---
-N_mag = mean(abs(N), 2);
+[N, ~, ~] = stft(noisePro, fsSet, 'Window', win, 'OverlapLength', overlap, 'FFTLength', fftLen);
+% Noise function
+Noise = mean(abs(N), 2);
 %Spectral subtraction
-S_mag = abs(S);
-S_clean_mag = S_mag - N_mag;
-S_clean_mag(S_clean_mag < 0) = 0;% remove negatives
-S_clean = S_clean_mag .* exp(1j * angle(S));
+Sign = abs(S);
+Signcleaner = Sign - Noise;
+Signcleaner(Signcleaner < 0) = 0;% want the index for positive value and remove negatives
+Signcleaner = Signcleaner .* exp(1j * angle(S));
 %final step to clean out noise and keep as y
-y = real(istft(S_clean, fsSet, 'Window', win, 'OverlapLength', overlap, 'FFTLength', fftLen));
+y = real(istft(Signcleaner, fsSet, 'Window', win, 'OverlapLength', overlap, 'FFTLength', fftLen));
 
 % normalize - finds the loudest point in the audio 
     % same reason of mono, consistency dataset, improve data integrity for feature extraction
@@ -58,8 +58,7 @@ y = real(istft(S_clean, fsSet, 'Window', win, 'OverlapLength', overlap, 'FFTLeng
     end
     
  %trim silence:
-     if length(y)/Fs<1
-   else
+    if length(y)/Fs>1 % use if esle if condition of sample is more than 1s
    threshold = 0.01; % any amplitude lower than 1% consider as silence
    % Trim silence from the audio signal
    trim = find(abs(y)> threshold); % locate position where the audio is louder than silence
@@ -146,21 +145,19 @@ acc_values = zeros(length(k_values),1);
 for j = 1:length(k_values)
    k_i = k_values(j);
    Mdl_i = fitcknn(XtrainData, YtrainLabels, 'NumNeighbors', k_i,'Standardize',true);
-   cvmdl = crossval(Mdl_i,'KFold',5);
-   losses(j)= kfoldLoss(cvmdl);
+knnPred = predict(Mdl_i, XtestData);
 end
-[~,bestIdx]=min(losses);
-best_k = k_values(bestIdx);
-Mdl = fitcknn(XtrainData, YtrainLabels, "NumNeighbors",best_k);
-knnPred = predict(Mdl, XtestData);
+
 % Calculate accuracy for KNN train model
-knnAccur = mean(knnPred == YtestLabels);
-knnAccur = knnAccur* 100;
+knnAccur = mean(knnPred == YtestLabels); %fomula for accuracy by Mablab
+knnAccur = knnAccur* 100; % %% accuracy
+
+%print the result of accuracy %:
 fprintf("Training samples : %d\n", length(YtrainLabels));
 fprintf("Testing samples : %d\n", length(YtestLabels));
-fprintf("The KNN accuracy by %d k is %.2f%%\n",best_k ,knnAccur);
+fprintf("The KNN accuracy by k is %.2f%%\n" ,knnAccur);
 % accuracy of SVM train model
-accur = accur * 100;
+accur = accur * 100; % % accuracy
 fprintf("The SVM Accuracy: %.2f%%\n", accur);
 % plot the confusion matrix
 figure;
