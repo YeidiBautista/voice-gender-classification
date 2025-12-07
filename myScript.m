@@ -32,7 +32,7 @@ for i = 1:length(files)
     Fs = fsSet;
    end
  
-%noise cleaning process
+% noise cleaning process
 noiseLen = round(0.2 * fsSet);
 noiseProfile = y(1:noiseLen);
 win = hamming(512, 'periodic');
